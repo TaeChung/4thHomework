@@ -76,11 +76,12 @@ function showQuestions() {
 }
 
 function AITA(event) {
-	console.log("button-clicked")
+	console.log(event.target.textContent)
 	trackIndex++
 	if (event.target.textContent == questionsList[trackIndex].rightanswer){
 		Score++
-		userScore.textContent=Score
+		console.log("correct")
+		userScore.textContent = Score
 	}
 	showQuestions()
 	
