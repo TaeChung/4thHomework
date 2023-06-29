@@ -1,0 +1,36 @@
+  head {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif, 'Times New Roman', Times;
+    margin: 0;
+    text-align:left;
+  }
+  
+  header {
+    padding: 60px;
+    text-align: center;
+    background: #13293d;
+    color: blueviolet;
+  }
+  
+  .card {
+    border-style: solid;
+    border-width: 1px;
+    padding: 10px;
+    float: left;
+    width: 25%;
+  }
+  
+  .card header {
+    padding: 20px;
+  }
+  
+  .card p {
+    text-align: center;
+  }
+  
+  .card img {
+    width: 100%;
+  }
