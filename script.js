@@ -5,6 +5,8 @@ var counter = document.querySelector("counter")
 var userScore = document.querySelector("#Score")
 var timer = document.querySelector("timer")
 var startButton = document.querySelector(".Start-Button")
+var submitButton = document.getElementById("submit");
+submitButton.addEventListener("click", showResults);
 var Timer; 
 var Score= 0
 var trackIndex = 0
@@ -21,7 +23,7 @@ var questionsList = [
 		rightanswer: "1000+"
 	},
 	{
-		question: "During which Monarch's reign was Hagia Sophia constructed?",
+		question: "During which Monarch's reign was the Hagia Sophia constructed?",
 		choices: ["Augustus", "Aurelian", "Heraclius", "Justinian I",],
 		rightanswer: "Justinian I"
 	},
@@ -46,10 +48,13 @@ function startQuiz() {
 
 function generateQuiz(questions, quizContainer, resultsContainer, submitButton) {
 
-
-
 	function showResults(questions, quizContainer, resultsContainer) {
+		var resultsContainer = document.getElementById("results");
+		resultsContainer.textContent = "Your Score: " + Score;
 
+		trackIndex = "";
+		Score = "";
+		userScore.textContent = Score;
 	}
 
 
@@ -77,12 +82,12 @@ function showQuestions() {
 
 function AITA(event) {
 	console.log(event.target.textContent)
-	trackIndex++
 	if (event.target.textContent == questionsList[trackIndex].rightanswer){
 		Score++
 		console.log("correct")
 		userScore.textContent = Score
 	}
+	trackIndex++
 	showQuestions()
 	
 	
