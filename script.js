@@ -1,17 +1,7 @@
-var answerInput = document.querySelector("answer")
-var addButton = document.querySelector("add")
-var subtraction = document.querySelector("subtract")
-var counter = document.querySelector("counter")
-var userScore = document.querySelector("#Score")
-var timer = document.querySelector("timer")
-var startButton = document.querySelector(".Start-Button")
-var submitButton = document.getElementById("submit");
-submitButton.addEventListener("click", showResults);
-var Timer; 
-var Score= 0
-var trackIndex = 0
-userScore.textContent=Score
-var questionsList = [
+const userScore = document.querySelector("#Score");
+const questionStorage = document.querySelector("#Question-Storage");
+const buttonsContainer = document.querySelector(".buttons");
+const questionsList = [
 	{
 		question: "How old was Augustus when he formed and became part of the Second Triumvirate?",
 		choices: ["31", "20", "38", "27",],
@@ -37,68 +27,132 @@ var questionsList = [
 		choices: ["Turkey-Gobekli Tepe", "Egypt-Pyramids of Giza", "Malta-The Megalithic Temples of Malta", "Greece-Parthenon",],
 		rightanswer: "Turkey-Gobekli Tepe. It is around 9500-11000 years old."
 	},
-]
+];
+document.querySelector('.Start-Button').addEventListener('click', startQuiz);
+document.getElementById('submit').addEventListener('click', showResults);
 
-startButton.addEventListener("click", startQuiz)
+var score = 0;
+var trackIndex = 0;
+const totalQuestions = questionsList.length; //does this link to const questionslink???
+const totalTime = 1000; 
+let timeLeft = totalTime;
+userScore.textContent = "Your Score" + score;
 
 function startQuiz() {
-	showQuestions()
+	showQuestions();
+	startTimer();
 }
+//COMMAS are what SEPARATES
+//trackIndex is a variable
+//variables are containers for storing data...
+//trackIndex is....
 
-
-function generateQuiz(questions, quizContainer, resultsContainer, submitButton) {
-
-	function showResults(questions, quizContainer, resultsContainer) {
-		var resultsContainer = document.getElementById("results");
-		resultsContainer.textContent = "Your Score: " + Score;
-
-		trackIndex = "";
-		Score = "";
-		userScore.textContent = Score;
-	}
-
-
-	showQuestions(questions, quizContainer);
-
-
-	submitButton.onclick = function () {
-		showResults(questions, quizContainer, resultsContainer);
-	}
-}
+// const cars = ["BMW", "Volvo", "AMG"]
+// BMW is 0, Volvo is 1, AMG is 2.
+//Index always starts at zero.
+//Index is a number, that number is the location of their placement in the array.
 
 function showQuestions() {
-	var h3 = document.querySelector("#Question-Storage")
-	h3.textContent = questionsList[trackIndex].question
-	document.querySelector(".buttons").textContent=""
-	questionsList[trackIndex].choices.forEach(function (choices) {
-		var button = document.createElement("button")
-		button.textContent = choices
-		button.addEventListener("click", function(event){
-			AITA(event)
-		}) 
-		document.querySelector(".buttons").append(button)
-	})
+	if (trackIndex < totalQuestions && timeLeft > 0) { 
+		questionStorage.textContent = questionsList[trackIndex].question //runs a 
+		buttonsContainer.textContent = "" 
+
+		questionsList[trackIndex].choices.forEach(function (choice, index) { //for each value
+			const button = document.createElement("button") //it creates a button
+			button.textContent = choice;
+
+			button.addEventListener("click", function () { //adds an EventListener to listen for clicks.
+				evaluateAnswer(index)
+			});
+			buttonsContainer.appendChild(button) //creates an empty string
+		});
+	} else {
+		clearInterval(timer); //here
+		showResults()
+	}	
 }
 
-function AITA(event) {
-	console.log(event.target.textContent)
-	if (event.target.textContent == questionsList[trackIndex].rightanswer){
-		Score++
-		console.log("correct")
-		userScore.textContent = Score
+//textContent is a DOM manipulation. 
+//index is the number we put in to grab the choice
+
+
+function evaluateAnswer(index) {
+	if (questionsList[trackIndex].choices[index] === questionsList[trackIndex].rightanswer) {
+		score++;
+		console.log("correct");
+		userScore.textContent = "Your Score: " + score; //why is there a space inside ""?
+		//Aesthetics, it adds a space.
+	} else {
+		timeLeft -= 30;
 	}
-	trackIndex++
-	showQuestions()
-	
-	
+//checks if your answer is the right answer, it adds 1 to your score.
+// if you are wrong it takes off 30s.
+	trackIndex++;
 
-	// check comment
+	if (trackIndex < totalQuestions && timeLeft > 0) {
+		showQuestions();
+	} else {
+		clearInterval(timer); //here
+		showResults();
+	}
 }
 
-function checkScore(){
-	
+function showResults() {
+	const resultsContainer = document.getElementById("showResults");
+	resultsContainer.innerHTML = "";
+
+	const initialsForm = document.createElement("form");
+	initialsForm.innerHTML = `
+		<label for="initials">Enter your initials:</label>
+		<input type="text" id="initials" name="initials" required>
+		<button type="submit">Save Score</button>
+	`;
+//creates a container for results. Gets live put into the index.html.
+//STUDY DOM MANIPULATION.
+
+	const saveScore = (event) => {
+		event.preventDefault();
+		const initialsInput = document.getElementById("initials").value;
+		localStorage.setItem(initialsInput, score);
+		alert("Score saved!");
+	};
+
+	initialsForm.addEventListener("submit", saveScore);
+	resultsContainer.appendChild(initialsForm);
+
+	questionStorage.textContent = "Quiz Completed";
+	buttonsContainer.innerHTML = "";
 }
 
-Timer = setInterval(function(){
-	console.log(Score)
-},1000) 
+
+
+//this is DOM MANIPULATION
+//IF TIME IS >0, IT WILL SHOW THE ACTIVE TIME
+//IF TIME=0, IT SAYS TIMES UP AND SHOWS RESULTS.
+function startTimer() {
+	const timerElement = document.getElementById("counter");
+	const updateTimer = () => {
+		if (timeLeft > 0) {
+			timeLeft--;
+			timerElement.textContent = `Time left: ${timeLeft}s`;
+		} else {
+			clearInterval(timer); //here
+			timerElement.textContent = "Time's up!";
+			showResults();
+		}
+	};
+//sets the timer. interval is a 1000.
+	const timer = setInterval(() => {
+		updateTimer();
+		if ((trackIndex + 1) === totalQuestions) { //if index reaches 5, its done, sin
+			clearInterval(timer); //here
+			showResults();
+		}
+	}, 1000);
+}
+
+//since index STARTS at the number zero, to make it ON PAR with the TOTAL QUESTIONS/LENGTH/AKA NO.
+//ITEMS IN AN ARRAY, 1 is added to make it on par with each other.
+
+//Fix DOM Manipulation in index.html
+//timerElement `` vs "" figure out
