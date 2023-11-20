@@ -17,3 +17,5 @@ developer.mozilla.org for code
 w3schools.com for code
 TA Charlie Puente (assistance / code revision)
 Tutor Bobbi Tarkany (assistance / code revision)
+Ask BCS Learning Assistant
+
